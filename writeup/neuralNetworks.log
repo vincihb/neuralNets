@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  16 JAN 2019 22:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  5 FEB 2019 01:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1000,6 +1000,8 @@ Package: pagecolor 2017/05/29 v1.0i Provides thepagecolor (HMM)
 Package: lipsum 2014/07/27 v1.3 150 paragraphs of Lorem Ipsum dummy text
 \c@lips@count=\count191
 )
+\GPT@outputbox=\box48
+
 (/usr/local/texlive/2018/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
 Package: fancyhdr 2017/06/30 v3.9a Extensive control of page headers and footer
 s
@@ -1085,7 +1087,7 @@ File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count192
 \scratchdimen=\dimen310
-\scratchbox=\box48
+\scratchbox=\box49
 \nofMPsegments=\count193
 \nofMParguments=\count194
 \everyMPshowfont=\toks48
@@ -1169,7 +1171,7 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 114.
 Package xypdf Info: Line width: 0.47987pt on input line 114.
-\AtBeginShipoutBox=\box49
+\AtBeginShipoutBox=\box50
 Package hyperref Info: Link coloring OFF on input line 114.
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/hyperref/nameref.sty
@@ -1263,7 +1265,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 298.
 Here is how much of TeX's memory you used:
  21429 strings out of 492649
  340591 string characters out of 6129622
- 655051 words of memory out of 5000000
+ 655163 words of memory out of 5000000
  24859 multiletter control sequences out of 15000+600000
  74993 words of font info for 165 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1280,7 +1282,7 @@ s/type1/urw/symbol/usyr.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/urw
 /times/utmb8a.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/urw/times/utm
 r8a.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></
 usr/local/texlive/2018/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on neuralNetworks.pdf (4 pages, 114555 bytes).
+Output written on neuralNetworks.pdf (4 pages, 114669 bytes).
 PDF statistics:
  110 PDF objects out of 1000 (max. 8388607)
  89 compressed objects within 1 object stream
