@@ -11,8 +11,6 @@ class net(object):
     def initialise(self):
         w, b = initialiseNet(arrayOfNeurons)
 
-    
-
     def feedForward(inputArray, weights, biases, neurons):
         activations = inputArray
         i = 0
