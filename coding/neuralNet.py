@@ -3,26 +3,30 @@ import math
 import mnistLoad
 
 class net(object):
-    arrayOfNeurons = np.array([]);
 
-    def description(self):
-        print(self.arrayOfNeurons)
+    zeds = []
+    layersNet = 0
+
+
+    def __init__(self, array):
+        self.array = array
     
-    def initialise(self):
-        w, b = initialiseNet(arrayOfNeurons)
-
-    def feedForward(inputArray, weights, biases, neurons):
+    def description(self):
+        print(self.array)
+    
+    def feedForward(self, inputArray, weights, biases, neurons):
         activations = inputArray
         i = 0
         while i < len(neurons)-1:
-            activations = sigmoidArray((weights[i].dot(activations) + biases[i])[0])
+            zeds.append(normalizeArray((weights[i].dot(activations) + biases[i])[0]))
+            activations = normalizeArray(sigmoidArray(zeds[i]))
             i = i + 1
-            print(activations)
         return activations
 
-    def initialiseNet(array):
+    def initialiseNet(self, array):
         weights = []
         biases = []
+        layersNet = len(array)
         i = 0
         while i < len(array)-1:
             weights.append(np.random.random((array[i+1], array[i])))
@@ -30,13 +34,40 @@ class net(object):
             i = i + 1
         return weights, biases
 
-    def sigmoidArray(array):
+    def feedBack(self, labelArray, outputArray):
+        arrayA = []
+        deltaCY = []
         i = 0
-        while i < len(array):
-            array[i] = sigmoid(array[i])
-            i = i + 1
-        return array
+        while i < len(outputArray):
+            deltaCY.append(outputArray[i] - labelArray[i])
+            
+
+
 
 #misc functions
+def normalizeArray(array):
+    i = 0
+    sumArray = 0
+    while i < len(array):
+        sumArray = array[i] + sumArray
+        i = i + 1
+    i = 0
+    while i < len(array):
+        array[i] = array[i]/sumArray
+        i = i + 1
+    return array
+
 def sigmoid(x):
-    return 1/(1+math.exp(-x))
+    return 1.0/(1+math.exp(-x))
+
+def sigmoidDerivative(x):
+    return 1.0/((1+math.exp(-x))**2)
+
+def sigmoidArray(array):
+    i = 0
+    while i < len(array):
+        array[i] = sigmoid(array[i])
+        i = i + 1
+    return array
+
+
