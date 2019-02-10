@@ -36,10 +36,12 @@ class net(object):
 
     def feedBack(self, labelArray, outputArray):
         arrayA = []
-        deltaCY = []
+        deltaLayers = []
         i = 0
         while i < len(outputArray):
-            deltaCY.append(outputArray[i] - labelArray[i])
+            deltaLayers.append((outputArray[i] - labelArray[i]) 
+                    * zeds[i]) 
+            
             
 
 
@@ -61,7 +63,7 @@ def sigmoid(x):
     return 1.0/(1+math.exp(-x))
 
 def sigmoidDerivative(x):
-    return 1.0/((1+math.exp(-x))**2)
+    return math.exp(-x)/((1+math.exp(-x))**2)
 
 def sigmoidArray(array):
     i = 0
