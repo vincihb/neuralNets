@@ -7,26 +7,27 @@ class net(object):
     zeds = []
     layersNet = 0
 
-
     def __init__(self, array):
         self.array = array
     
     def description(self):
         print(self.array)
+        print(self.zeds)
+        print(self.layersNet)
     
-    def feedForward(self, inputArray, weights, biases, neurons):
+    def feedForward(self, inputArray, weights, biases):
         activations = inputArray
         i = 0
-        while i < len(neurons)-1:
-            zeds.append(normalizeArray((weights[i].dot(activations) + biases[i])[0]))
-            activations = normalizeArray(sigmoidArray(zeds[i]))
+        while i < self.layersNet - 1:
+            self.zeds.append(normalizeArray((weights[i].dot(activations) + biases[i])[0]))
+            activations = normalizeArray(sigmoidArray(self.zeds[i]))
             i = i + 1
         return activations
 
     def initialiseNet(self, array):
         weights = []
         biases = []
-        layersNet = len(array)
+        self.layersNet = len(array)
         i = 0
         while i < len(array)-1:
             weights.append(np.random.random((array[i+1], array[i])))
@@ -37,11 +38,13 @@ class net(object):
     def feedBack(self, labelArray, outputArray):
         arrayA = []
         deltaLayers = []
+        deltaLayers = (outputArray - labelArray) * normalizeArray(
+                sigmoidDerivative(self.zeds[self.layersNet - 1]))
         i = 0
-        while i < len(outputArray):
-            deltaLayers.append((outputArray[i] - labelArray[i]) 
-                    * zeds[i]) 
+        while i < self.layersNet-1:
             
+
+                    
             
 
 
