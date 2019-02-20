@@ -246,7 +246,7 @@ Note that $y_{j} = \sigma \left( z_{j}^{k} \right)$ and hence
 Thus, we have
 \begin{IEEEeqnarray*}{rCl} \label{backprop1}
 	\delta_{i}^{k} &=& \frac{\partial C}{\partial z_{i}^{k}} \\
-	\delta_{i}^{k} &=& \sum_{j=1}^{m} \frac{\partial C}{\partial y_{j}} 
+	\delta_{i}^{k} &=& \sum_{j=1}^{l_{k}} \frac{\partial C}{\partial y_{j}} 
 	\frac{\partial y_{j}}{\partial z_{i}^{k}} \\
 	\delta_{i}^{k} &=& \frac{\partial C}{\partial y_{i}}
 	\sigma^{'} \left( z_{i}^{k} \right) \IEEEyesnumber
@@ -266,9 +266,9 @@ where $z_{h}^{1} = x_{h}$.
 Hence,
 \begin{IEEEeqnarray*}{rCl} \label{backprop2}
 	\delta_{i}^{j} &=& \frac{\partial C}{\partial z_{i}^{j}} \\
-	\delta_{i}^{j} &=& \sum_{p=1}^{m} \frac{\partial C}{\partial z_{p}^{j+1}}
+	\delta_{i}^{j} &=& \sum_{p=1}^{l_{j+1}} \frac{\partial C}{\partial z_{p}^{j+1}}
 	\frac{\partial z_{p}^{j+1}}{\partial z_{i}^{j}} \\
-	\delta_{i}^{j} &=& \sum_{p=1}^{m} \delta_{p}^{j+1} 
+	\delta_{i}^{j} &=& \sum_{p=1}^{l_{j+1}} \delta_{p}^{j+1} 
 	w_{i, p}^{j+1} \sigma^{'} \left ( z_{i}^{j} \right) \IEEEyesnumber
 \end{IEEEeqnarray*}
 

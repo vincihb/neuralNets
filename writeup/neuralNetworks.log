@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  5 FEB 2019 01:41
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  19 FEB 2019 18:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1263,11 +1263,11 @@ Package rerunfilecheck Info: File `neuralNetworks.out' has not changed.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 298.
  ) 
 Here is how much of TeX's memory you used:
- 21429 strings out of 492649
- 340591 string characters out of 6129622
- 655163 words of memory out of 5000000
+ 21432 strings out of 492649
+ 340607 string characters out of 6129622
+ 655164 words of memory out of 5000000
  24859 multiletter control sequences out of 15000+600000
- 74993 words of font info for 165 fonts, out of 8000000 for 9000
+ 76209 words of font info for 168 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  37i,16n,51p,3266b,438s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2018/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
@@ -1282,7 +1282,7 @@ s/type1/urw/symbol/usyr.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/urw
 /times/utmb8a.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/urw/times/utm
 r8a.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></
 usr/local/texlive/2018/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on neuralNetworks.pdf (4 pages, 114669 bytes).
+Output written on neuralNetworks.pdf (4 pages, 114727 bytes).
 PDF statistics:
  110 PDF objects out of 1000 (max. 8388607)
  89 compressed objects within 1 object stream
