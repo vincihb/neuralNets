@@ -17,10 +17,11 @@ class net(object):
     
     def feedForward(self, inputArray):
         activations = inputArray
+        self.zeds.append(inputArray)
         i = 0
         while i < self.layersNet - 1:
             self.zeds.append(normalizeArray((self.weights[i].dot(activations) + self.biases[i])[0]))
-            activations = normalizeArray(sigmoidArray(self.zeds[i]))
+            activations = normalizeArray(sigmoidArray(self.zeds[i+1]))
             i = i + 1
         return activations
 
@@ -43,9 +44,12 @@ class net(object):
                 sigmoidDerArray(self.zeds[len(self.zeds) - 1]))))
         
         i = 0
-        while i < self.layersNet:
-            deltaLayers.append(np.diag(np.transpose(self.weights[self.layersNet-1-i]).dot(
-                deltaLayers[i])).dot(normalizeArray(sigmoidDerArray(self.zeds[]
+        print np.shape(self.zeds)
+        print self.layersNet
+        while i < self.layersNet - 1:
+            print i
+            deltaLayers.append(np.diag(np.transpose(self.weights[self.layersNet-2-i]).dot(
+                deltaLayers[i])).dot(normalizeArray(sigmoidDerArray(self.zeds[self.layersNet - 2 - i]
                         )
                     )
                 )
