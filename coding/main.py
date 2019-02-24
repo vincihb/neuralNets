@@ -4,12 +4,15 @@ import mnistLoad
 
 n1 = neuralNet.net([784, 200, 50, 10])
 
-w, b = n1.initialiseNet(n1.array)
+w, b = n1.initialiseNet()
 
 imagesTrain, labelsTrain, imagesTest, labelsTest = mnistLoad.initialiseMnist()
 
-activations = n1.feedForward(imagesTrain[0])
-
-print activations
-
-print(n1.feedBack(labelsTrain[0], activations))
+i = 0
+while i < len(imagesTrain):
+    print "On level " + str(i)
+    activations = n1.feedForward(imagesTrain[i], i)
+    print labelsTrain[i]
+    print activations
+    n1.feedBack(labelsTrain[i], activations)
+    i = i + 1
