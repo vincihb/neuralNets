@@ -1,6 +1,7 @@
 import numpy as np
 import math 
 import mnistLoad
+import vector as vc
 
 class net(object):
 
@@ -17,22 +18,30 @@ class net(object):
     
     def feedForward(self, inputArray, flag):
         print self.weights[0][0][0]
-        activations = inputArray
+        activations = vc.Vector(inputArray)
+        tempRet = vc.Vector(inputArray)
         if flag == 0:
-            self.zeds.append(inputArray)
+            self.zeds.append(activations)
             i = 0
             while i < self.layersNet - 1:
-                self.zeds.append(normalizeArray((self.weights[i].dot(activations) 
-                    + self.biases[i])[0]))
-                activations = normalizeArray(sigmoidArray(self.zeds[i+1]))
+                tempRet.matrixProduct(self.weights[i])
+                tempRet.vecAdd(self.biases[i])
+                tempRet.normalizeVector()
+                self.zeds.append(tempRet)
+                activations = tempRet.sigmoidArray()
                 i = i + 1
         else:
-            self.zeds[0] = inputArray
+            self.zeds[0] = vc.Vector(inputArray)
             i = 0
             while i < self.layersNet - 1:
-                self.zeds[i+1] = (normalizeArray((self.weights[i].dot(activations) 
-                    + self.biases[i])[0]))
-                activations = normalizeArray(sigmoidArray(self.zeds[i+1]))
+                tempRet.matrixProduct(self.weights[i])
+                tempRet.vecAdd(self.biases[i])
+                tempRet.normalizeVector()
+                self.zeds[i+1] = tempRet
+                activations = tempRet.sigmoidArray()
+                #self.zeds[i+1] = (normalizeArray(arrayAdd(self.weights[i].dot(activations),
+                #    self.biases[i])))
+                #activations = normalizeArray(sigmoidArray(self.zeds[i+1]))
                 i = i + 1
         return activations
 
@@ -42,51 +51,101 @@ class net(object):
         self.layersNet = len(self.array)
         i = 0
         while i < len(self.array)-1:
-            weights.append(np.random.random((self.array[i+1], self.array[i])))
-            biases.append(np.random.random((self.array[i+1],1)))
+            weights.append(rowStochMatrix(np.random.random((self.array[i+1], self.array[i]))))
+            biases.append(normalizeArray(np.random.random((self.array[i+1],1))))
             i = i + 1
-        self.weights = rowStochMatrix(weights)
-        self.biases = rowStochMatrix(biases)
+        self.weights = weights
+        self.biases = biases
         return self.weights, self.biases
 
     def feedBack(self, label, outputArray):
         deltaLayers = []
-        deltaLayers.append(np.diag(outputArray - createLabelArray(label)).dot(
-            normalizeArray(sigmoidDerArray(self.zeds[len(self.zeds) - 1]))))    
-        print createLabelArray(label)
+        outputA = vc.Vector(outputArray)
+        labelA = vc.Vector(createLabelArray(label))
+        outputA.vecDiff(labelA.array)
+        tempRet = self.zeds[len(self.zeds) - 1]
+        #tempRet = self.zeds[len(self.zeds) - 1]
+        tempRet.sigmoidDerArray()
+        tempRet.matrixProduct(np.diag(outputA.array))
+        deltaLayers.append(tempRet)
+        #deltaLayers.append(np.diag(arrayDiff(outputArray, createLabelArray(label))).dot(
+        #    normalizeArray(sigmoidDerArray(self.zeds[len(self.zeds) - 1]))))    
         i = 0
         while i < self.layersNet - 1:
-            deltaLayers.append(np.diag(np.transpose(self.weights[self.layersNet-2-i]).dot(
-                deltaLayers[i])).dot(normalizeArray(sigmoidDerArray(self.zeds[self.layersNet - 2 - i]
-                        )
-                    )
-                )
-            )
+            tempRet = self.zeds[len(self.zeds) - 2 - i]
+            #tempRet = self.zeds[len(self.zeds) -2 - i]
+            tempRet.sigmoidDerArray()
+            prevDelta = deltaLayers[i]
+            prevDelta.matrixProduct(np.transpose(self.weights[self.layersNet - 2 - i]))
+            tempRet.matrixProduct(np.diag(prevDelta.array))
+            deltaLayers.append(tempRet)
+            #deltaLayers.append(np.diag(np.transpose(self.weights[self.layersNet-2-i]).dot(
+            #    deltaLayers[i])).dot(normalizeArray(sigmoidDerArray(self.zeds[self.layersNet - 2 - i]
+            #            )
+            #        )
+            #    )
+            #)
             i = i + 1
         weightDiff = []
         i = 0 
         while i < self.layersNet - 1:
-            weightDiff.append(rowStochMatrix(matrixMult(deltaLayers[self.layersNet - i - 1], 
-                normalizeArray(sigmoidArray(self.zeds[i+1])))))
+            zedCall = self.zeds[i + 1]
+            delCall = deltaLayers[self.layersNet - i - 1]
+            weightDiff.append(rowStochMatrix(delCall.matrixMult(zedCall.sigmoidArray())))
+            #weightDiff.append(rowStochMatrix(matrixMult(deltaLayers[self.layersNet - i - 1], 
+            #    normalizeArray(sigmoidArray(self.zeds[i+1])))))
             i = i + 1
         i = 0
-        nabla = 10000000
+        #print weightDiff[0][0][0]
         while i < self.layersNet - 1:
-            self.weights[i] = rowStochMatrix(nabla*(self.weights[i] - np.transpose(weightDiff[i])))
-            self.biases[self.layersNet - i - 2] = normalizeArray(nabla*(self.biases[
-                self.layersNet - i - 2] 
-                    - deltaLayers[i]))
+            self.weights[i] = rowStochMatrix(matrixDiff(self.weights[i], np.transpose(weightDiff[i])))
+            #self.weights[i] = rowStochMatrix(arrayDiff(self.weights[i],
+            #    np.transpose(weightDiff[i])))
+            tempB = vc.Vector(self.biases[self.layersNet - i - 2])
+            tempB.vecDiff(deltaLayers[i].array)
+            tempB.normalizeVector()
+            self.biases[self.layersNet - i - 2] = tempB.array
+            #self.biases[self.layersNet - i - 2] = normalizeArray((self.biases[self.layersNet - i - 2]
+            #    - deltaLayers[i].array))
             i = i + 1
         return 1 
 
 #misc functions
+def matrixDiff(matrix1, matrix2):
+    matrixRet = []
+    i = 0
+    while i < len(matrix1):
+        j = 0
+        arrayR = []
+        while j < len(matrix1[0]):
+            arrayR.append(abs(matrix1[i][j] - matrix2[i][j]))
+            j = j + 1
+        matrixRet.append(arrayR)
+        i = i + 1
+    return matrixRet
+
+def arrayDiff(array1, array2):
+    array = []
+    i = 0 
+    while i < len(array1):
+        array.append(array1[i] - array2[i])
+        i = i + 1
+    return array
+
+def arrayAdd(array1, array2):
+    array = []
+    i = 0
+    while i < len(array1):
+        array.append(array1[i] + array2[i])
+        i = i + 1
+    return array
+
 def rowStochMatrix(arrayM):
     i = 0
     while i < len(arrayM):
         arrayM[i] = normalizeArray(arrayM[i])
         i = i + 1
     return arrayM
-
 
 def matrixMult(array1, array2):
     array = []

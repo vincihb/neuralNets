@@ -1,6 +1,7 @@
 import neuralNet
 import numpy as np
 import mnistLoad
+import vector as vc
 
 n1 = neuralNet.net([784, 200, 50, 10])
 
