@@ -59,6 +59,56 @@ class Vector(object):
             i = i + 1
         self.array = arrayRet
         return arrayRet
+    
+    #Square a vector
+    def vecSq(self):
+        arrayRet = []
+        i = 0
+        while i < len(self.array):
+            arrayRet.append(self.array[i]*self.array[i])
+            i = i + 1
+        self.array = arrayRet
+        return arrayRet
+    
+    #Square root of a vector
+    def vecSqrt(self):
+        arrayRet = []
+        i = 0
+        while i < len(self.array):
+            arrayRet.append(self.array[i]**(0.5))
+            i = i + 1
+        self.array = arrayRet
+        return arrayRet
+
+    #Divide two vectors
+    def vecDivision(self, vector2):
+        arrayRet = []
+        i = 0
+        while i < len(self.array):
+            arrayRet.append(self.array[i]/(vector2.array[i]))
+            i = i + 1
+        self.array = arrayRet
+        return arrayRet
+    
+    #Add a constant to each entry
+    def addConstant(self, c):
+        arrayRet = []
+        i = 0
+        while i < len(self.array):
+            arrayRet.append(self.array[i] + c)
+            i = i + 1
+        self.array = arrayRet
+        return arrayRet
+
+    #Multiply by a constant 
+    def multiConstant(self, c):
+        arrayRet = []
+        i = 0
+        while i < len(self.array):
+            arrayRet.append(self.array[i]*c)
+            i = i + 1
+        self.array = arrayRet
+        return arrayRet
 
     #Normalize vector
     def normalizeVector(self):

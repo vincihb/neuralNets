@@ -14,7 +14,16 @@ print v.matrixProduct(m)
 print v.array
 print v.normalizeVector()
 
-v = vc.Vector([2., 2., 1.])
+v.array = [1., 2., 3.]
+tempArray = [2., 2., 1.]
+v2 = vc.Vector(tempArray)
+v2.vecSq()
+print tempArray
+print v2.array
+v2.vecSqrt()
+print v2.array
+v2.addConstant(5)
+print v2.array
+v2.multiConstant(10**-1)
+print v2.array
 
-print v.array
-print arrayV[0].array
