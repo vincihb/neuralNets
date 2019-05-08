@@ -1,4 +1,5 @@
 import math
+from numba import vectorize
 
 class Vector(object):
 
@@ -16,7 +17,7 @@ class Vector(object):
             dotPro = dotPro + (self.array[i] * array1[i])
             i = i + 1
         return dotPro
-
+    
     #Multiply a matrix with a vector
     def matrixProduct(self, matrix1):
         arrayRet = []
@@ -26,7 +27,7 @@ class Vector(object):
             i = i + 1
         self.array = arrayRet
         return arrayRet
-
+    
     #Create a matrix with two vectors
     def matrixMult(self, array2):
         array = []
@@ -39,7 +40,7 @@ class Vector(object):
                 j = j + 1
             i = i + 1
         return array
-
+    
     #Add two vectors
     def vecAdd(self, array2):
         arrayRet = []
@@ -79,7 +80,7 @@ class Vector(object):
             i = i + 1
         self.array = arrayRet
         return arrayRet
-
+    
     #Divide two vectors
     def vecDivision(self, vector2):
         arrayRet = []
@@ -125,21 +126,25 @@ class Vector(object):
 
     #Applies sigmoid derivative on each element
     def sigmoidDerArray(self):
+        arrayRet = []
         i = 0
         while i < len(self.array):
-            self.array[i] = sigmoidDerivative(self.array[i])
+            arrayRet.append(sigmoidDerivative(self.array[i]))
             i = i + 1
-        self.array = self.normalizeVector()
-        return self.array
+        arrayRet = normalizeArray(arrayRet)
+        self.array = arrayRet
+        return arrayRet
     
     #Applies sigmoid on each element
     def sigmoidArray(self):
+        arrayRet = []
         i = 0
         while i < len(self.array):
-            self.array[i] = sigmoid(self.array[i])
+            arrayRet.append(sigmoid(self.array[i]))
             i = i + 1
-        self.array = self.normalizeVector()
-        return self.array
+        arrayRet = normalizeArray(arrayRet)
+        self.array = arrayRet
+        return arrayRet
 
 #misc functions
 def sigmoid(x):
@@ -147,3 +152,16 @@ def sigmoid(x):
 
 def sigmoidDerivative(x):
     return math.exp(-x)/((1+math.exp(-x))**2)
+
+def normalizeArray(array):
+    i = 0
+    sumArray = 0
+    while i < len(array):
+        sumArray = array[i] + sumArray
+        i = i + 1
+    i = 0
+    while i < len(array):
+        array[i] = array[i]/sumArray
+        i = i + 1
+    return array
+
