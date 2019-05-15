@@ -8,6 +8,8 @@ v = vc.Vector([1., 2., 3.])
 m = [[2, 0, 0],
     [0, 2, 0]]
 
+arrayV.append(v.array)
+
 print v.matrixProduct(m)
 print v.array
 print v.normalizeVector()
@@ -26,3 +28,4 @@ print v.array
 v.multiConstant(10**-1)
 print v.array
 print arrayV[0]
+print arrayV[1]

@@ -2,6 +2,7 @@ import numpy as np
 import math 
 import mnistLoad
 import vector as vc
+import matrix as mx
 
 class net(object):
 
@@ -28,8 +29,9 @@ class net(object):
         m2Weights = []
         self.layersNet = len(self.array)
         i = 0
-        while i < len(self.array)-1:
-            weights.append(rowStochMatrix(np.random.random((self.array[i+1], self.array[i]))))
+        while i < len(self.array) - 1:
+            wTemp = mx.Matrix(np.random.random((self.array[i+1], self.array[i])))
+            weights.append(wTemp.rowStochMatrix())
             biases.append(normalizeArray(np.random.random(self.array[i+1])))
             tempZerosArray = np.zeros(self.array[i+1])
             tempZerosMatrix = np.zeros((self.array[i+1], self.array[i]))
@@ -59,7 +61,8 @@ class net(object):
         activations = vc.Vector(inputArray) #Create a vector for the activations 
         tempRet = vc.Vector(inputArray) #Create a temporary vector for the input array
         if flag == 0: #Check if this is the first training loop
-            self.zeds.append(activations) #Add the activations of the first layer as zeds
+            self.zeds.append(activations.array) #Add the activations of the first layer as zeds, need 
+            #later for weightDiff array
             i = 0
             while i < self.layersNet - 1:
                 tempRet.matrixProduct(self.weights[i]) #Multiply the weights with the current activations
@@ -69,17 +72,17 @@ class net(object):
                 activations = tempRet.sigmoidArray() #Activations are just the sigmoid of the zeds we created
                 i = i + 1 #Iterate to go to the next layer
         else:
-            self.zeds[0] = vc.Vector(inputArray)
+            self.zeds[0] = inputArray
             i = 0
             while i < self.layersNet - 1:
                 tempRet.matrixProduct(self.weights[i])
                 tempRet.vecAdd(self.biases[i])
                 tempRet.normalizeVector()
-                self.zeds[i] = tempRet
+                self.zeds[i+1] = tempRet.array
                 activations = tempRet.sigmoidArray()
-                self.zeds[i+1] = (normalizeArray(arrayAdd(self.weights[i].dot(activations),
-                    self.biases[i])))
-                activations = normalizeArray(sigmoidArray(self.zeds[i+1]))
+                #self.zeds[i+1] = (normalizeArray(arrayAdd(self.weights[i].dot(activations),
+                #    self.biases[i])))
+                #activations = normalizeArray(sigmoidArray(self.zeds[i+1]))
                 i = i + 1
         return activations
 
@@ -94,21 +97,26 @@ class net(object):
         tempRet.matrixProduct(np.diag(outputA.array)) #Find the delta values of the last layer
         deltaLayers.append(tempRet) #Store the vector of the delta values
         i = 0
-        while i < self.layersNet - 1:
-            tempRet = vc.Vector(self.zeds[len(self.zeds)-2-i]) #Keep moving backwards and get the rest deltas 
+        while i < len(self.zeds) - 2: #self.zeds[0] is the inputArray, so we have to take away 2
+            tempRet = vc.Vector(self.zeds[len(self.zeds)-2-i])
             tempRet.sigmoidDerArray()
             prevDelta = vc.Vector(deltaLayers[i].array)
             prevDelta.matrixProduct(np.transpose(self.weights[self.layersNet-2-i]))
-            tempRet.matrixProduct(np.diag(prevDelta.array))
-            deltaLayers.append(tempRet)
+            prevDelta.matrixProduct(np.diag(tempRet.array))
+            deltaLayers.append(prevDelta)
             i = i + 1
         weightDiff = []
         i = 0 
         while i < self.layersNet - 1:
-            zedCall = vc.Vector(self.zeds[i+1].array)
-            delCall = vc.Vector(deltaLayers[self.layersNet-i-1].array)
-            weightDiff.append(rowStochMatrix(delCall.matrixMult(zedCall.sigmoidArray())))
+            zedCall = vc.Vector(self.zeds[i])
+            delCall = vc.Vector(deltaLayers[self.layersNet-i-2].array)
+            wDTemp = mx.Matrix(delCall.matrixMult(zedCall.sigmoidArray()))
+            weightDiff.append(wDTemp.rowStochMatrix())
             i = i + 1
+            #zedCall = vc.Vector(self.zeds[i+1])
+            #delCall = vc.Vector(deltaLayers[self.layersNet-i-1].array)
+            #weightDiff.append(rowStochMatrix(delCall.matrixMult(zedCall.sigmoidArray())))
+            #i = i + 1
         i = 0
         while i < self.layersNet - 1:
             print "..... In feedback loop at layer " + str(i)
@@ -126,16 +134,19 @@ class net(object):
     def sGradDescentArray(self, gradArray, tStep, layer):
             tStep = tStep + 1
             tempVector = vc.Vector(gradArray)
-            print self.beta1
-            self.m1B[self.layersNet-layer-2] = self.beta1*self.m1B[self.layersNet-layer-2] + (1-self.beta1)*gradArray
-            self.m2B[self.layersNet-layer-2] = self.beta2*self.m2B[self.layersNet-layer-2
-                    ] + (1-self.beta2)*((tempVector.vecSq()).array)
-            mhat1B = vcVector(self.m1B[self.layersNet-layer-2])
+            self.m1B[self.layersNet-layer-2] = self.beta1*np.asarray(self.m1B[self.layersNet-layer-2]
+                    ) + (1-self.beta1)*np.asarray(gradArray)
+            self.m2B[self.layersNet-layer-2] = self.beta2*np.asarray(self.m2B[self.layersNet-layer-2]
+                    ) + (1-self.beta2)*np.asarray(tempVector.vecSq())
+            mhat1B = vc.Vector(self.m1B[self.layersNet-layer-2])
             mhat1B.multiConstant((1-self.beta1**tStep)**(-1))
             mhat2B = vc.Vector(self.m2B[self.layersNet-layer-2])
             mhat2B.multiConstant((1-self.beta2**tStep)**(-1))
+            mhat2B.vecSqrt()
+            mhat2B.addConstant(self.epsilon)
+            #self.alpha = self.alpha*math.sqrt(1 - self.beta2**tStep)/(1-self.beta1**tStep) 
             tempVector = vc.Vector(self.biases[self.layersNet-layer-2] 
-                    - self.alpha*mhat1B.vecDivision((mhat2B.vecSqrt()).addConstant(self.epsilon))) 
+                    - self.alpha*np.asarray(mhat1B.vecDivision(mhat2B))) 
             tempVector.normalizeVector()
             self.biases[self.layersNet-layer-2] = tempVector.array
     
@@ -143,14 +154,36 @@ class net(object):
     #ADAM stochastic gradient descent algorithm for a matrix
     def sGradDescentMatrix(self, gradMatrix, tStep, layer):
             tStep = tStep + 1
-            self.m1W[layer] = self.beta1*self.m1W[layer] + (1-self.beta1)*gradMatrix
-            self.m2W[layer] = self.beta2*self.m2W[layer] + (1-self.beta2)*(matrixSq(gradMatrix))
-            mhat1W = matrixMConstant(self.m1W[layer], (1-self.beta1**tStep)**(-1))
-            mhat2W = matrixMConstant(self.m2W[layer], (1-self.beta2**tStep)**(-1))
-            tempMatrix = self.weights[layer] - self.alpha*matrixDivide(mhat1W, 
-                    matrixMConstant(matrixSqrt(mhat2W), self.epsilon))
-            tempMatrix = rowStochMatrix(tempMatrix)
-            self.weights[layer] = tempMatrix
+            gMatrix = mx.Matrix(gradMatrix)
+            m1W = mx.Matrix(self.m1W[layer])
+            m1W.matrixMConstant(-self.beta1)
+            gMatrix.matrixMConstant(1 - self.beta1)
+            self.m1W[layer] = gMatrix.matrixDiff(m1W)
+            #self.m1W[layer] = self.beta1*self.m1W[layer] + (1-self.beta1)*gradMatrix
+            #self.m2W[layer] = self.beta2*self.m2W[layer] + (1-self.beta2)*(matrixSq(gradMatrix))
+            gMatrix = mx.Matrix(gradMatrix)
+            gMatrix.matrixSq()
+            m2W = mx.Matrix(self.m2W[layer])
+            m2W.matrixMConstant(-self.beta2)
+            gMatrix.matrixMConstant(1 - self.beta2)
+            self.m2W[layer] = gMatrix.matrixDiff(m2W)
+            mhat1W = mx.Matrix(self.m1W[layer])
+            mhat1W.matrixMConstant((1-self.beta1**tStep)**(-1))
+            mhat2W = mx.Matrix(self.m2W[layer])
+            mhat2W.matrixMConstant((1-self.beta2**tStep)**(-1))
+            #self.alpha = self.alpha*math.sqrt(1 - self.beta2**tStep)/(1-self.beta1**tStep)
+            #mhat1W = matrixMConstant(self.m1W[layer], (1-self.beta1**tStep)**(-1))
+            #mhat2W = matrixMConstant(self.m2W[layer], (1-self.beta2**tStep)**(-1))
+            mhat2W.matrixSqrt()
+            mhat2W.matrixMConstant(self.epsilon)
+            mhat1W.matrixDivide(mhat2W)
+            mhat1W.matrixMConstant(self.alpha)
+            tempMatrix = mx.Matrix(self.weights[layer])
+            tempMatrix.matrixDiff(mhat1W)
+            #tempMatrix = self.weights[layer] - matrixMConstant(matrixDivide(mhat1W, 
+            #        matrixMConstant(matrixSqrt(mhat2W), self.epsilon)), self.alpha)
+            tempMatrix.rowStochMatrix()
+            self.weights[layer] = tempMatrix.matrix
 
 #misc functions
 def createLabelArray(label):
@@ -164,6 +197,7 @@ def createLabelArray(label):
 
 def matrixDivide(matrix1, matrix2):
     matrixRet = []
+    i = 0
     while i < len(matrix1):
         j = 0 
         arrayR = []
@@ -176,6 +210,7 @@ def matrixDivide(matrix1, matrix2):
 
 def matrixSqrt(matrix1):
     matrixRet = []
+    i = 0
     while i < len(matrix1):
         j = 0
         arrayR = []
@@ -188,6 +223,7 @@ def matrixSqrt(matrix1):
 
 def matrixMConstant(matrix1, c):
     matrixRet = []
+    i = 0
     while i < len(matrix1):
         j = 0
         arrayR = []
@@ -200,6 +236,7 @@ def matrixMConstant(matrix1, c):
 
 def matrixSq(matrix1):
     matrixRet = []
+    i = 0
     while i < len(matrix1):
         j = 0
         arrayR = []

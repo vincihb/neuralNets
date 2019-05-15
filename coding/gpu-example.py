@@ -15,10 +15,15 @@ def vector_add_cpu(a, b):
  
 # This is the GPU version. Note the @vectorize decorator. This tells
 # numba to turn this into a GPU vectorized function.
-@vectorize(["float32(float32, float32)"], target='parallel')
+#@vectorize(["float32(float32, float32)"], target='parallel')
+#def vector_add_gpu(a, b):
+#  return a + b;
+
+@vectorize
 def vector_add_gpu(a, b):
   return a + b;
  
+
 def main():
   a_source = np.ones(NUM_ELEMENTS, dtype=np.float32)
   b_source = np.ones(NUM_ELEMENTS, dtype=np.float32)

@@ -5,14 +5,11 @@ class Vector(object):
 
     def __init__(self, array):
         self.array = array
-    
-    def description(self):
-        print self.array
 
     #Standard dot product between two vectors
     def dotProduct(self, array1):
         dotPro = 0
-        i = 0 
+        i = 0
         while i < len(self.array):
             dotPro = dotPro + (self.array[i] * array1[i])
             i = i + 1
@@ -115,14 +112,17 @@ class Vector(object):
     def normalizeVector(self):
         i = 0
         sumArray = 0
+        arrayRet = []
         while i < len(self.array):
             sumArray = self.array[i] + sumArray
             i = i + 1
         i = 0
         while i < len(self.array):
-            self.array[i] =(self.array[i]/sumArray)
+            #self.array[i] = (self.array[i]/sumArray)
+            arrayRet.append(self.array[i]/sumArray)
             i = i + 1
-        return self.array
+        self.array = arrayRet
+        return arrayRet
 
     #Applies sigmoid derivative on each element
     def sigmoidDerArray(self):
