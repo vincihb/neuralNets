@@ -1,5 +1,4 @@
-# neuralNets
+# Neural Networks
 
-This repository is my first. Let's see how badly I mess this up. 
-On other notes, I'm is trying to code neural networks, specifically
-GAN networks, but I'll probably create another respository for that. 
+Coded neural networks from scratch in Python (didn't use Tensorflow). 
+It can run on a CPU, but needs GPUs and parallel processing to run quicker. 
